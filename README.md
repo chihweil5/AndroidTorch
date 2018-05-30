@@ -1,50 +1,94 @@
-# Torch Android Studio template
+# Torch Android Example with OpenMP
 
-This repo displays a modern working sample of `torch-android`, in contrast to the official outdated demos it does not use ANT or eclipse.
-* Android Studio
-* Latest build tools (25+ as of April 2017)
-* Gradle
-* Cmake NDK buildchain (using CMakeLists.txt to setup native build)
+This repo is built on top of [paramsen/torch-android-studio-template](https://github.com/paramsen/torch-android-studio-template) which is a modern working sample of `torch-android`.
+More information can be found on: [paramsen.github.io](https://paramsen.github.io/building-torch-android-01/)
 
-This project is the topic of a `torch-android` article series of mine [paramsen.github.io](https://paramsen.github.io/building-torch-android-01/).
 
 ## Setup
 
-In order to run it you have to build `torch-android` from source, I've automated the process as described [here in an article @ paramsen.github.io](https://paramsen.github.io/torch-android-vagrant-build-box/). Simply put you will need to build `torch-android` for the architectures armeabi-v7a and arm64-v8a either by using my automatic-vagrant-build-box or the manual official guide. When built you copy the binaries to `./app/native-libs` and the built lua lib to `./app/src/main/assets/lua`.
+#### Install Torch 7 on ubuntu
 
-## Motivation
+```bash
+$ git clone https://github.com/torch/distro.git ~/torch --recursive
+$ cd ~/torch; bash install-deps;
+$ ./install.sh
 
-The official demo projects are built with ANT and probably created in Eclipse back in 2011 (?). The Android devs have long since deprecated pretty much everything from back then, even the old NDK buildchain, so integrating `torch-android` into a modern Android Studio project is all about trial-and-error right now.
+# On Linux with bash
+$ source ~/.bashrc
+# On Linux with zsh
+$ source ~/.zshrc
+# On OSX or in Linux with none of the above.
+$ source ~/.profile
+```
 
-I integrated `torch-android` for a client, spending over 400 hours on the task. With a proper project like this I would probably only have spent ~80 hours, focusing less on figuring out wth is going on and more on actually integrating Torch. With this sample project I hope to help future devs from going down the same rabbit hole.
+Run torch with the command th to make sure torch is installed
+```
+$ th
 
-## Features
+ ______             __   |  Torch7                                   
+/_  __/__  ________/ /   |  Scientific computing for Lua.         
+ / / / _ \/ __/ __/ _ \  |                                           
+/_/  \___/_/  \__/_//_/  |  https://github.com/torch   
+                         |  http://torch.ch            
 
-#### cmake buildchain
-It's not pretty, but I got the cmake buildchain working with `torch-android` after some struggling, check it out [CMakeLists.txt](https://github.com/paramsen/torch-android-studio-template/blob/master/app/CMakeLists.txt). I also did some magic in the [build.gradle](https://github.com/paramsen/torch-android-studio-template/blob/master/app/build.gradle#L32) to get it working.
+th> torch.Tensor{1,2,3}
+1
+2
+3
+[torch.DoubleTensor of dimension 3]     
+```
 
-#### x86 fallback (emulator support)
-I've setup the project to run on both x86 and ARM systems, even though Torch only supports ARM. This means you can use the emulator even though you have an ARM-only dependency. This is done through simply providing a stub implementation of the native parts when on x86. Here's the magic [CMakeLists.txt](https://github.com/paramsen/torch-android-studio-template/blob/master/app/CMakeLists.txt#L109).
+#### Build `torch-android` library
+- clone the library
+```
+$ git clone https://github.com/soumith/torch-android.git
+$ cd torch-android
+```
+- Download submodule
+```
+$ git submodule update --init --recursive
+```
+If you fail to download `external/libpng`, please clone it manually
+```
+$ cd ..
+$ wget https://github.com/borisfom/platform_external_libpng/archive/2964a877aeeb02a66eeba084ceb1dfa3c6836f1b.zip
+$ unzip 2964a877aeeb02a66eeba084ceb1dfa3c6836f1b.zip
+$ cp -r ./platform_external_libpng-2964a877aeeb02a66eeba084ceb1dfa3c6836f1b/* ./torch-android/external/libpng/
+```
+- Download NDK v13b and move to your home directory
+    https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip
+- Add ndk-build to your $PATH
+```bash
+$ export PATH="$HOME/android-ndk-r13b:$PATH"
+```
+- Modify `ARCH` and `WITH_CUDA` variables in `build.sh` at line 8, line 13
+    ```
+    Nexus 6:
+    ARCH="v7n"   WITH_CUDA="OFF"
+    ```
+- Run the script
+```
+$ ./build.sh
+```
+    The libraries can be found in `torch-android/install`
 
-#### Dynamic parameters to Torch .lua script
-1. Torch is initialized with a dynamic path to the `.net` model file, look at [Torch.cpp#25](https://github.com/paramsen/torch-android-studio-template/blob/master/app/src/main/native/Torch.cpp#L25) and [main.lua#8](https://github.com/paramsen/torch-android-studio-template/blob/master/app/src/main/assets/main.lua#L8) to see how it works.
-2. Torch is processing dynamic data bridged from Java to Torch lua. Look at [Torch.cpp#36](https://github.com/paramsen/torch-android-studio-template/blob/master/app/src/main/native/Torch.cpp#L36) and [main.lua#16](https://github.com/paramsen/torch-android-studio-template/blob/master/app/src/main/assets/main.lua#L16)
+## Run Example Application
 
-#### Deterministic Torch lifecycle
-Torch is properly initialized lazily and destroyed, freeing all resources. Low battery impact was top priority for my client, so inventing a proper lifecycle management was crucial. Look at [JNIBridge.cpp#25](https://github.com/paramsen/torch-android-studio-template/blob/master/app/src/main/native/JNIBridge.cpp#L25) and [JNIBridge.cpp#57](https://github.com/paramsen/torch-android-studio-template/blob/master/app/src/main/native/JNIBridge.cpp#L57) to see how it's implemented.  
-Torch can be initialized, destroyed and initialized again without any problems.
+- copy the binaries to `./app/native-libs` and the built lua lib to `./app/src/main/assets/lua`.
 
-#### Simple api
-The integration between Java, C and lua (Torch) is pretty simple in this project. Hopefully the code is self-documenting.
+- Build the app with `SDK 25` and `CMake`, `NDK` installed
+    If using Android Studio, install them at `Tool > Android > SDK Manager`
+```
+$ ./gradlew build
+```
+- Install apk
+```
+$ adb install app/build/outputs/apk/app-debug.apk
+```
 
-<p align="center">
-  <img src="https://github.com/paramsen/torch-android-studio-template/blob/master/optimized-flow-chart.jpg" alt="Preview flow chart" height=500/>
-</p>
+## OpenMP
 
-## Troubleshooting
-
-Issues goes here, questions might be more fitting here [paramsen.github.io](https://paramsen.github.io/torch-cmake-and-android-studio/) in the comments section.
-
-## License
-
-I created this purely for educational purposes, hence the MIT license.
+- Get CPU usage
+```
+$ adb shell top | grep com.paramsen.torchtemple
+```
