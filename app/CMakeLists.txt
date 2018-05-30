@@ -14,7 +14,8 @@ if(NOT ${X86})
                  SHARED
 
                  src/main/native/JNIBridge.cpp
-                 src/main/native/Torch.cpp )
+                 src/main/native/Torch.cpp
+                 src/main/native/OMPTest.cpp)
 
     add_library( torchandroid
                  SHARED

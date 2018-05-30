@@ -13,8 +13,8 @@ android {
 
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++11"
-
+                arguments "-DANDROID_ARM_NEON=TRUE", "-DANDROID_TOOLCHAIN=clang"
+                cppFlags "-std=c++11", "-fopenmp"
             }
         }
 
