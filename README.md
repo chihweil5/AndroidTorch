@@ -92,3 +92,36 @@ $ adb install app/build/outputs/apk/app-debug.apk
 ```
 $ adb shell top | grep com.paramsen.torchtemple
 ```
+
+- THNN Functions that support OpenMP
+```
+HardTanh.c
+LogSoftMax.c
+LookupTable.c
+PReLU.c
+SoftMax.c
+SparseLinear.c
+SpatialAdaptiveMaxPooling.c
+SpatialAveragePooling.c
+SpatialClassNLLCriterion.c
+SpatialConvolutionLocal.c
+SpatialConvolutionMap.c
+SpatialConvolutionMM.c
+SpatialDilatedMaxPooling.c
+SpatialFractionalMaxPooling.c
+SpatialFullConvolutionMap.c
+SpatialMaxUnpooling.c
+SpatialReflectionPadding.c
+SpatialReplicationPadding.c
+SpatialSubSampling.c
+Sqrt.c
+Square.c
+Tanh.c
+TemporalMaxPooling.c
+unfold.c
+VolumetricAveragePooling.c
+VolumetricConvolutionMM.c
+VolumetricDilatedMaxPooling.c
+VolumetricMaxUnpooling.c
+VolumetricReplicationPadding.c
+```
