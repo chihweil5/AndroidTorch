@@ -6,6 +6,8 @@
 #include "Constants.h"
 #include "Log.h"
 #include <stdexcept>
+#include <string>
+
 
 Torch::Torch(AAssetManager *assetManager, const char *nativeSrcPath, const char *torchNetPath) {
     tensorStorage = THFloatStorage_newWithSize(INPUT_LENGTH);
@@ -31,6 +33,7 @@ Torch::Torch(AAssetManager *assetManager, const char *nativeSrcPath, const char 
 }
 
 float Torch::call(float *data) {
+
     THFloatStorage_rawCopy(tensorStorage, data);
     lua_getglobal(lua, "call");
     luaT_pushudata(lua, (void *)tensor, "torch.FloatTensor");

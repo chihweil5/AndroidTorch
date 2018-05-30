@@ -1,7 +1,9 @@
 package com.paramsen.torchtemple;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,11 +23,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//        System.out.println(stringFromJNI());
         bridge = new JNIBridge();
         boolean deviceSupportsARM = bridge.setup(this);
         data = new float[128];
-        Arrays.fill(data, 1f);
+        Arrays.fill(data, 4f);
 
         torchResult = (TextView) findViewById(R.id.torchResult);
         TextView torchCompatible = (TextView) findViewById(R.id.torchCompatible);
@@ -41,7 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRunTorch(View v) {
         float result = bridge.call(data);
-        String formatted = String.format(Locale.GERMANY, "%s: Torch returned %.2f", result > Float.MIN_VALUE ? "Success" : "Failure", result);
+        String formatted = String.format("%s: Torch returned %.2f", result > Float.MIN_VALUE ? "Success" : "Failure", result);
         torchResult.setText(formatted);
     }
+
+    static {
+        System.loadLibrary("native");
+    }
+
+    public native String stringFromJNI();
 }
