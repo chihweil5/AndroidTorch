@@ -5,8 +5,12 @@
 #include <omp.h>
 #include <jni.h>
 #include "Log.h"
-#include <string.h>
-#define NCORES 4
+#include <string>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#define N       100000
+#define THREADS 4
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,14 +20,14 @@ JNIEXPORT jstring JNICALL
 Java_com_paramsen_torchtemple_MainActivity_stringFromJNI(JNIEnv *env, jobject jThis)
 {
     lD("Hello OPENMP");
-    omp_set_num_threads(4);
     #pragma omp parallel
     {
+        auto res = omp_get_proc_bind();
+        lD("bind %d\n", res);
        int cores = omp_get_num_procs(); /* total number of cores available */
        int tid = omp_get_thread_num(); /* the current thread ID */
        int total_threads = omp_get_num_threads(); /* total number of threads */
        int max_threads = omp_get_max_threads(); /* maximal number of threads can be requested in this Processor */
-
          if (tid == 0) {
              lD("%i : You have %d cores Processor.\n",tid, cores);
              lD("%i : OpenMP generated %d threads.[max = %d].\n",tid, total_threads, max_threads);

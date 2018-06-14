@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        System.out.println(stringFromJNI());
+        System.out.println(stringFromJNI());
         bridge = new JNIBridge();
         boolean deviceSupportsARM = bridge.setup(this);
         data = new float[128];
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickRunTorch(View v) {
+        System.out.println("clicked!");
         float result = bridge.call(data);
         String formatted = String.format("%s: Torch returned %.2f", result > Float.MIN_VALUE ? "Success" : "Failure", result);
         torchResult.setText(formatted);
