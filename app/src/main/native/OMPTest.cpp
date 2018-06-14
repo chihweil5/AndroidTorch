@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 JNIEXPORT jstring JNICALL
-Java_com_paramsen_torchtemple_MainActivity_stringFromJNI(JNIEnv *env, jobject jThis)
+Java_com_paramsen_torchtemple_MainActivity_stringFromOMPTest(JNIEnv *env, jobject jThis)
 {
     lD("Hello OPENMP");
     #pragma omp parallel

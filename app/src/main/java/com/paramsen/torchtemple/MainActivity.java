@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println(stringFromJNI());
+        System.out.println(stringFromOMPTest());
         bridge = new JNIBridge();
         boolean deviceSupportsARM = bridge.setup(this);
         data = new float[128];
@@ -52,5 +52,5 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native");
     }
 
-    public native String stringFromJNI();
+    public native String stringFromOMPTest();
 }
