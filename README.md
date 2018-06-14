@@ -70,11 +70,11 @@ $ export PATH="$HOME/android-ndk-r13b:$PATH"
 ```
 $ ./build.sh
 ```
-    The libraries can be found in `torch-android/install`
+The libraries can be found in `torch-android/install`
 
 ## Run Example Application
 
-- copy the binaries to `./app/native-libs` and the built lua lib to `./app/src/main/assets/lua`.
+- Copy the binaries to `./app/native-libs` and the built lua lib to `./app/src/main/assets/lua`.
 
 - Build the app with `SDK 25` and `CMake`, `NDK` installed
     If using Android Studio, install them at `Tool > Android > SDK Manager`
@@ -86,12 +86,23 @@ $ ./gradlew build
 $ adb install app/build/outputs/apk/app-debug.apk
 ```
 
+## Monitor CPU Usage
+
+- Get each cpu usage statistic, run `cpu.sh`
+```
+$ ./cpu.sh
+```
+
+- Visualize cpu usage, run `cpu_live_graph.py` (need python installed)
+```
+$ python cpu_live_graph.py
+```
+
+![](cpu_monitor_output.png)
+
 ## OpenMP
 
-- Get CPU usage
-```
-$ adb shell top | grep com.paramsen.torchtemple
-```
+- You can find openmp test in `./app/src/main/native/OMPTest.cpp`
 
 - THNN Functions that support OpenMP
 ```
